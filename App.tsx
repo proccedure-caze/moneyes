@@ -5,6 +5,12 @@ import Login from "./app/screens/Login";
 import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebase.config";
 import Home from "./app/screens/Home";
+import { NativeWindStyleSheet } from "nativewind";
+import { Text } from "react-native";
+
+NativeWindStyleSheet.setOutput({
+  default: "native",
+});
 
 const Stack = createNativeStackNavigator();
 
