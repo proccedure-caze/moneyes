@@ -1,5 +1,4 @@
-import { createUserWithEmailAndPassword as createUserWithEmailAndPasswordOnAuth } from "firebase/auth";
-import { FIREBASE_AUTH } from "../../firebase.config";
+import auth from "@react-native-firebase/auth";
 import { addDocumentToFirestoreAndUpdateId } from "../utils";
 import { TABLES } from "../enums";
 
@@ -7,6 +6,6 @@ export async function createUserOnAuthAndFirestore(
   email: string,
   password: string
 ) {
-  await createUserWithEmailAndPasswordOnAuth(FIREBASE_AUTH, email, password);
-  await addDocumentToFirestoreAndUpdateId(TABLES.USERS, { email, password });
+  await auth().createUserWithEmailAndPassword(email, password);
+  await addDocumentToFirestoreAndUpdateId(TABLES.USERS, { email });
 }

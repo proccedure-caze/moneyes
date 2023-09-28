@@ -1,14 +1,5 @@
-import {
-  CollectionReference,
-  DocumentData,
-  onSnapshot,
-  query,
-  updateDoc,
-  addDoc,
-  where,
-  collection,
-} from "firebase/firestore";
-import { FIREBASE_DB } from "../../firebase.config";
+import firestore from "@react-native-firebase/firestore";
+import uuid from "react-native-uuid";
 import { TABLES } from "../enums/tables";
 
 export async function addDocumentToFirestoreAndUpdateId(
@@ -19,18 +10,23 @@ export async function addDocumentToFirestoreAndUpdateId(
 ): Promise<any> {
   return new Promise((res, rej) => {
     try {
-      const collectionRef = collection(FIREBASE_DB, table);
-      const queries = query(collectionRef, where("id", "==", data.id));
+      const dataId = data.id ?? `temp-id-${uuid.v4()}`;
+      const store = firestore();
+      const collectionRef = store.collection(table);
+      const queries = collectionRef.where("id", "==", dataId);
 
-      addDoc(collectionRef, { id: `temp-id-${crypto.randomUUID()}`, ...data });
+      collectionRef.add({
+        ...data,
+        id: dataId,
+      });
 
-      const unsubscribeCreate = onSnapshot(queries, (querySnapshot) => {
+      const unsubscribeCreate = queries.onSnapshot((querySnapshot) => {
         const doc = querySnapshot.docs[0];
-        updateDoc(doc.ref, { ...data, id: doc.id });
-        const queries = query(collectionRef, where("id", "==", doc.id));
+        store.doc(doc.ref.path).update({ ...data, id: doc.id });
 
+        const queries = collectionRef.where("id", "==", doc.id);
         unsubscribeCreate();
-        const unsubscribeUpdate = onSnapshot(queries, (querySnapshot) => {
+        const unsubscribeUpdate = queries.onSnapshot((querySnapshot) => {
           const doc = querySnapshot.docs[0].data();
 
           unsubscribeUpdate();

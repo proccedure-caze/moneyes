@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "799945577014",
+    "project_id": "moneyes-2600a",
+    "storage_bucket": "moneyes-2600a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799945577014:android:def9e599465424fdeabe97",
+        "android_client_info": {
+          "package_name": "com.danielcaze.moneyes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB23vC8pmV-HIalRtGdetr93hqcoUaGjPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
