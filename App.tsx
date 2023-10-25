@@ -1,21 +1,15 @@
-import { useEffect, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "./app/screens/Login";
-import Home from "./app/screens/Home";
-import { NativeWindStyleSheet } from "nativewind";
+import { useEffect } from "react";
 import { Alert } from "react-native";
 import messaging from "@react-native-firebase/messaging";
-import auth from "@react-native-firebase/auth";
-
-NativeWindStyleSheet.setOutput({
-  default: "native",
-});
-
-const Stack = createNativeStackNavigator();
+import { useFonts, Inter_700Bold } from "@expo-google-fonts/inter";
+import { StatusBar } from "expo-status-bar";
+import Routes from "./src/routes";
+import { Providers } from "./src/components/Providers";
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [fontsLoaded] = useFonts({
+    Inter_700Bold,
+  });
 
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
@@ -26,7 +20,7 @@ export default function App() {
       messaging()
         .getToken()
         .then((token) => {
-          console.log(token);
+          console.log("FCM Token:", token);
         });
 
       openAppFromQuitState();
@@ -69,27 +63,10 @@ export default function App() {
     return unsubscribe;
   }, []);
 
-  useEffect(() => {
-    const subscribe = auth().onAuthStateChanged((user) => {
-      setLoggedIn(!!user);
-    });
-
-    return subscribe;
-  }, []);
-
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {!loggedIn ? (
-          <>
-            <Stack.Screen name="Login" component={Login} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Home" component={Home} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Providers>
+      <StatusBar backgroundColor="transparent" style="dark" translucent />
+      {fontsLoaded && <Routes />}
+    </Providers>
   );
 }

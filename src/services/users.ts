@@ -1,6 +1,6 @@
 import auth from "@react-native-firebase/auth";
 import { addDocumentToFirestoreAndUpdateId } from "../utils";
-import { TABLES } from "../enums";
+import { TABLES } from "../enums/tables";
 
 export async function createUserOnAuthAndFirestore(
   email: string,
