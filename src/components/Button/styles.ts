@@ -1,7 +1,7 @@
 import styled from "styled-components/native";
 
 export const ButtonContainer = styled.TouchableOpacity`
-  padding: 12px 0;
+  padding: 12px;
   border-radius: ${({ theme }) => theme.RADII.LG};
 `;
 

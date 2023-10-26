@@ -90,11 +90,12 @@ export default function Login({ navigation }: RouteProps<"Login">) {
         </InputsView>
 
         <Button
-          text="Enviar"
           onPress={handleSubmit(handleAccountCreate)}
           backgroundColor="#EA5B5F"
           textColor="#FFF"
-        />
+        >
+          Enviar
+        </Button>
 
         <SignUpView>
           <NotRegisteredText>Ainda não possui conta?</NotRegisteredText>

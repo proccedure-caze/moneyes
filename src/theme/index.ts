@@ -9,7 +9,9 @@ export const defaultTheme = {
     GRAY_DARKER: "#595959",
     GRAY_DARK: "#686868",
     GRAY: "#646464",
+    GRAY_2: "#A0A0AF",
     GRAY_LIGHT: "#F7F7F7",
+    GRAY_LIGHTER: "#EEEEEE",
 
     WHITE: "#FFF",
     BLACK: "#000",
@@ -18,7 +20,7 @@ export const defaultTheme = {
     BOLD: "Inter_700Bold",
   },
   RADII: {
-    XS: "5px",
+    XS: "6px",
     SM: "8px",
     MD: "10px",
     LG: "12px",
@@ -30,6 +32,7 @@ export const defaultTheme = {
     XL: "18px",
     "2XL": "24px",
     "3XL": "32px",
+    "4XL": "46px",
   },
 } as const;
 

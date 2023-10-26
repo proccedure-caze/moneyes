@@ -1,12 +1,9 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { View, Text, TouchableOpacity } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../components/Input";
 import Feather from "@expo/vector-icons/Feather";
-import { Box } from "../../components/Box";
-import { useState } from "react";
 import { createUserOnAuthAndFirestore } from "../../services/users";
 import { Button } from "../../components/Button";
 import { handleError } from "../../utils/handleError";
@@ -88,7 +85,7 @@ export default function SignUp() {
             control={control}
             name="email"
             placeholder="Email"
-            error={errors.email?.message}
+            error={errors.root?.signup?.message || errors.email?.message}
           />
           <Input
             control={control}
@@ -103,7 +100,7 @@ export default function SignUp() {
               )
             }
             onPressAfterIcon={() => setIsPasswordVisible((state) => !state)}
-            error={errors.password?.message}
+            error={errors.root?.signup?.message || errors.password?.message}
           />
           <Input
             control={control}
@@ -120,15 +117,18 @@ export default function SignUp() {
             onPressAfterIcon={() =>
               setIsConfirmPasswordVisible((state) => !state)
             }
-            error={errors.confirm_password?.message}
+            error={
+              errors.root?.signup?.message || errors.confirm_password?.message
+            }
           />
         </InputsContainer>
         <Button
-          text="Cadastrar"
           onPress={handleSubmit(onSubmit)}
           backgroundColor="#EA5B5F"
           textColor="#FFF"
-        />
+        >
+          Cadastrar
+        </Button>
       </SignUpContent>
     </SignUpContainer>
   );

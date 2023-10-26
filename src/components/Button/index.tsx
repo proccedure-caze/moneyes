@@ -1,22 +1,46 @@
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
+import { StyleSheet, Platform } from "react-native";
 import { ButtonContainer, ButtonContent } from "./styles";
 
+const styles = StyleSheet.create({
+  shadow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+});
+
 type Button = ComponentProps<typeof ButtonContainer> & {
-  text: string;
+  children: ReactNode;
   textColor?: string;
   backgroundColor?: string;
 };
 
 export function Button({
-  text,
+  children,
   textColor = "#000",
   backgroundColor = "#FFF",
-  style,
+  style = { button: {}, text: {} },
   ...props
 }: Button) {
   return (
-    <ButtonContainer style={{ ...style, backgroundColor }} {...props}>
-      <ButtonContent style={{ color: textColor }}>{text}</ButtonContent>
+    <ButtonContainer
+      style={{ ...style.button, backgroundColor, ...styles.shadow }}
+      {...props}
+    >
+      <ButtonContent
+        style={{ ...style.text, color: textColor, backgroundColor }}
+      >
+        {children}
+      </ButtonContent>
     </ButtonContainer>
   );
 }
