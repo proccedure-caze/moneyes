@@ -5,7 +5,9 @@ import { filterForUniqueDocs, registerDocument } from "../utils";
 import dayjs from "dayjs";
 import { TABLES } from "../enums/tables";
 
-export async function registerExpense(expense: Expense) {
+export async function registerExpense(
+  expense: Omit<Expense, "user" | "id" | "created_at" | "updated_at">
+) {
   return registerDocument<Expense>(TABLES.EXPENSES, expense, true);
 }
 

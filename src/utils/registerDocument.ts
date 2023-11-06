@@ -4,26 +4,34 @@ import firestore, {
 import auth from "@react-native-firebase/auth";
 import { TABLES } from "../enums/tables";
 
-export async function registerDocument<
-  T extends {
-    id?: string | null;
-    user?: FirebaseFirestoreTypes.DocumentReference | null;
-  }
->(collectionName: TABLES, documentData: T, addUserReference?: boolean) {
+export async function registerDocument<T>(
+  collectionName: TABLES,
+  documentData: Omit<T, "id" | "user" | "created_at" | "updated_at">,
+  addUserReference?: boolean
+): Promise<T> {
+  const now =
+    firestore.FieldValue.serverTimestamp() as unknown as FirebaseFirestoreTypes.Timestamp;
+  const currentUser = auth().currentUser;
+
   const newDocRef = await firestore()
     .collection(collectionName)
-    .add(documentData as any);
+    .add(documentData);
 
-  const updateData: Partial<T> = {
+  const updateData: any = {
     id: newDocRef.id,
-  } as T;
+    created_at: now,
+    updated_at: now,
+  };
 
   if (addUserReference) {
-    const currentUser = auth().currentUser;
-    if (currentUser) {
-      updateData.user = firestore().doc(`users/${currentUser.uid}`);
-    }
+    if (!currentUser) throw new Error("User not logged in");
+    updateData.user = firestore().doc(`users/${currentUser.uid}`) as any;
   }
 
   await newDocRef.update(updateData);
+
+  return {
+    ...documentData,
+    ...updateData,
+  } as T;
 }

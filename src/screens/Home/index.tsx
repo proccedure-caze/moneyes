@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Image,
   View,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { SimpleLineIcons, Feather } from "@expo/vector-icons";
 import { Button } from "../../components/Button";
@@ -33,6 +34,11 @@ import {
   RedFill,
   UpdateCard,
 } from "./styles";
+import { getUserExpensesFromMonth } from "../../services/expenses";
+import { formatBRL } from "../../utils";
+import dayjs from "dayjs";
+import { getUserMonthlyLimit } from "../../services/monthly_limits";
+import { z } from "zod";
 
 const styles = StyleSheet.create({
   shadow: {
@@ -44,13 +50,61 @@ const styles = StyleSheet.create({
   },
 });
 
+const _MAIN_CONTENT_INITIAL_STATE = z.object({
+  loading: z.boolean().default(true),
+  monthly_limit: z.number().default(0),
+  current_expense: z.number().default(0),
+});
+
+type MainContentType = z.infer<typeof _MAIN_CONTENT_INITIAL_STATE>;
+
 export default function Home() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [mainContent, setMainContent] = useState<MainContentType>(
+    _MAIN_CONTENT_INITIAL_STATE.parse({})
+  );
 
   const onLayout = (event: any) => {
     const { width, height } = event.nativeEvent.layout;
     setDimensions({ width, height });
   };
+
+  const getMonthExpenses = async () => {
+    try {
+      const now = dayjs();
+      setMainContent(_MAIN_CONTENT_INITIAL_STATE.parse({}));
+      const response = await getUserExpensesFromMonth(now.get("month"));
+      const totalAmount = response
+        .filter((res) => {
+          if (res.recurring === true) return true;
+
+          return dayjs(res.start_date.toDate())
+            .set("year", now.get("year"))
+            .set("month", now.get("month"))
+            .isBefore(res.end_date?.toDate());
+        })
+        .reduce((accumulator, current) => {
+          return accumulator + current.amount;
+        }, 0);
+      const [monthlyLimit] = await getUserMonthlyLimit();
+
+      setMainContent({
+        loading: false,
+        monthly_limit: monthlyLimit.limit,
+        current_expense: totalAmount,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getMonthExpenses();
+  }, []);
+
+  const pencentage = Math.round(
+    (mainContent.current_expense / mainContent.monthly_limit) * 100
+  );
 
   return (
     <HomeContainer>
@@ -69,7 +123,7 @@ export default function Home() {
         <HomeContent>
           <MainContent>
             <CircleContainer style={styles.shadow}>
-              <RedFill percentage={50} />
+              <RedFill percentage={pencentage} />
 
               <LiquidAnimationPercentage
                 onLayout={onLayout}
@@ -80,7 +134,11 @@ export default function Home() {
                   ],
                 }}
               >
-                50%
+                {mainContent.loading ? (
+                  <ActivityIndicator size="small" color="#EA5B5F" />
+                ) : (
+                  `${pencentage}%`
+                )}
               </LiquidAnimationPercentage>
             </CircleContainer>
 
@@ -88,7 +146,13 @@ export default function Home() {
               <ExpenseContainer>
                 <ExpenseTitle>Seus gastos</ExpenseTitle>
                 <ExpenseContent>
-                  <ExpenseAmount>R$ 2500,00</ExpenseAmount>
+                  <ExpenseAmount>
+                    {mainContent.loading ? (
+                      <ActivityIndicator size="small" color="#EA5B5F" />
+                    ) : (
+                      formatBRL(mainContent.current_expense)
+                    )}
+                  </ExpenseAmount>
                 </ExpenseContent>
               </ExpenseContainer>
 
@@ -101,7 +165,13 @@ export default function Home() {
               >
                 <ExpenseTitle>Seu limite mensal</ExpenseTitle>
                 <ExpenseContent>
-                  <ExpenseAmount>R$ 5000,00</ExpenseAmount>
+                  <ExpenseAmount>
+                    {mainContent.loading ? (
+                      <ActivityIndicator size="small" color="#EA5B5F" />
+                    ) : (
+                      formatBRL(mainContent.monthly_limit)
+                    )}
+                  </ExpenseAmount>
                 </ExpenseContent>
               </ExpenseContainer>
             </ExpensesView>

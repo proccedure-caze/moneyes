@@ -9,5 +9,5 @@ export type Expense = AuditFields & {
   color: string;
   start_date: FirebaseFirestoreTypes.Timestamp;
   end_date: FirebaseFirestoreTypes.Timestamp | null;
-  user: FirebaseFirestoreTypes.DocumentReference | null;
+  user: FirebaseFirestoreTypes.DocumentReference;
 };

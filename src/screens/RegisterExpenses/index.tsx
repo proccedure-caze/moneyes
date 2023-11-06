@@ -52,9 +52,6 @@ export default function RegisterExpenses({
 
   const registerNewExpense = async (data: expenseData) => {
     try {
-      const now =
-        firestore.FieldValue.serverTimestamp() as unknown as FirebaseFirestoreTypes.Timestamp;
-
       const formattedText = String(data.amount).replace(",", ".");
       const cents = Math.round(parseFloat(formattedText) * 100);
 
@@ -72,11 +69,6 @@ export default function RegisterExpenses({
           : firestore.Timestamp.fromDate(
               dayjs(data.end_date).hour(0).minute(0).millisecond(0).toDate()
             ),
-
-        id: "",
-        user: null,
-        created_at: now,
-        updated_at: now,
         active: true,
       });
       navigation.goBack();
