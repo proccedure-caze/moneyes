@@ -7,6 +7,8 @@ import SignUp from "../screens/SignUp";
 import Home from "../screens/Home";
 import Wallet from "../screens/Wallet";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import ExpensesJournal from "../screens/ExpensesJournal";
+import RegisterExpenses from "../screens/RegisterExpenses";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,6 +36,22 @@ function BottomTabs() {
         }}
       />
       <Tab.Screen
+        name="ExpensesJournal"
+        component={ExpensesJournal}
+        options={{
+          tabBarLabel: "",
+          tabBarButton: ({ onPress }) => (
+            <AntDesign
+              onPress={onPress}
+              style={{ marginTop: -26 }}
+              name="pluscircle"
+              color="#EA5B5F"
+              size={48}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Carteira"
         component={Wallet}
         options={{
@@ -51,13 +69,13 @@ function BottomTabs() {
 }
 
 export default function Routes() {
-  const [loggedUser, setLoggedUser] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(!!auth().currentUser);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged((user) => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
       setLoggedUser(!!user);
     });
-    return subscriber;
+    return unsubscribe;
   }, []);
 
   return (
@@ -70,6 +88,7 @@ export default function Routes() {
       ) : (
         <>
           <Stack.Screen name="BottomTabs" component={BottomTabs} />
+          <Stack.Screen name="RegisterExpenses" component={RegisterExpenses} />
         </>
       )}
     </Stack.Navigator>

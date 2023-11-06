@@ -5,9 +5,10 @@ import { ArrowButton, HeaderContainer, Title } from "./styles";
 
 type Header = {
   title: string;
+  disabled?: boolean;
 };
 
-export function Header({ title }: Header) {
+export function Header({ title, disabled }: Header) {
   const [canGoBack, setCanGoBack] = useState(false);
   const navigation = useNavigation();
 
@@ -27,6 +28,7 @@ export function Header({ title }: Header) {
             left: 24,
           }}
           onPress={navigation.goBack}
+          disabled={disabled}
         >
           <Feather name="chevron-left" color="#000" size={24} />
         </ArrowButton>

@@ -6,6 +6,7 @@ import {
   InputText,
   InputTextContainer,
   ErrorText,
+  InputMaskText,
 } from "./styles";
 
 const styles = StyleSheet.create({
@@ -28,6 +29,7 @@ type Input<
   beforeIcon?: ReactNode;
   afterIcon?: ReactNode;
   error?: string | null;
+  amount?: boolean;
   onPressAfterIcon?: (...options: any) => void;
   onPressBeforeIcon?: (...options: any) => void;
 };
@@ -42,6 +44,7 @@ export function Input<
   beforeIcon,
   afterIcon,
   error,
+  amount,
   onPressAfterIcon,
   onPressBeforeIcon,
   ...props
@@ -62,7 +65,29 @@ export function Input<
             {beforeIcon}
           </TouchableOpacity>
         )}
-        <InputText onChangeText={onChange} value={value} {...props} />
+        {amount ? (
+          <InputMaskText
+            onChangeText={(text) => {
+              const numericValue =
+                parseFloat(text.replace(/[^0-9]/g, "")) / 100;
+              onChange(numericValue);
+            }}
+            value={value}
+            type="money"
+            options={{
+              precision: 2,
+              separator: ",",
+              delimiter: ".",
+              unit: "R$",
+              suffixUnit: "",
+            }}
+            keyboardType="numeric"
+            {...props}
+          />
+        ) : (
+          <InputText onChangeText={onChange} value={value} {...props} />
+        )}
+
         {afterIcon && (
           <TouchableOpacity onPress={onPressAfterIcon}>
             {afterIcon}

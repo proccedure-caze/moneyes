@@ -5,7 +5,7 @@ export const HomeContainer = styled(SafeAreaView)`
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 34px;
-
+  background-color: ${({ theme }) => theme.COLORS.GRAY_LIGHT};
   gap: 10px;
   flex: 1;
 `;

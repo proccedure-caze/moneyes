@@ -1,5 +1,6 @@
 import styled from "styled-components/native";
 import { TextInput } from "react-native";
+import { TextInputMask } from "react-native-masked-text";
 import { css } from "styled-components/native";
 
 export const InputContainer = styled.View`
@@ -32,6 +33,10 @@ export const InputTextContainer = styled.View<InputTextContainer>`
 `;
 
 export const InputText = styled(TextInput)`
+  flex: 1;
+`;
+
+export const InputMaskText = styled(TextInputMask)`
   flex: 1;
 `;
 

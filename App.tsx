@@ -2,9 +2,12 @@ import { useEffect } from "react";
 import { Alert } from "react-native";
 import messaging from "@react-native-firebase/messaging";
 import { useFonts, Inter_700Bold } from "@expo-google-fonts/inter";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import Routes from "./src/routes";
 import { Providers } from "./src/components/Providers";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -59,6 +62,10 @@ export default function App() {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
     });
+
+    setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 2000);
 
     return unsubscribe;
   }, []);
