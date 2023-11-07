@@ -4,8 +4,14 @@ export type RoutesParamList = {
   Home: undefined;
   Login: undefined;
   SignUp: undefined;
-  ExpensesJournal: undefined;
-  RegisterExpenses: undefined;
+  Carteira: undefined;
+  Despesas: undefined;
+  RegisterExpenses?: {
+    id?: string;
+  };
+  RegisterCards?: {
+    id?: string;
+  };
 };
 
 type routesNames = keyof RoutesParamList;

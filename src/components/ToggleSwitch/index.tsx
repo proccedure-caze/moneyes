@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Animated, TouchableOpacity, Platform, StyleSheet } from "react-native";
 import { Container, SwitchContainer, Title, Toggle } from "./styles";
 
@@ -53,6 +53,14 @@ export function ToggleSwitch({
       outputRange: ["#ccc", "#EA5B5F"],
     }),
   };
+
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: isEnabled ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  }, [isEnabled]);
 
   return (
     <Container>

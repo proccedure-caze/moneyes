@@ -1,5 +1,5 @@
 import { ComponentProps, ReactNode } from "react";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { useController, Control, FieldValues, Path } from "react-hook-form";
 import {
   InputContainer,
@@ -10,11 +10,17 @@ import {
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: "#000",
-    shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
 });
 

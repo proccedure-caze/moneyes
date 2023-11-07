@@ -7,3 +7,19 @@ export const ExpensesJournalContainer = styled(SafeAreaView)`
   flex: 1;
   padding-bottom: 8px;
 `;
+
+export const ScreenDescription = styled.Text`
+  font-size: 16px;
+  text-align: center;
+  background-color: ${({ theme }) => theme.COLORS.WHITE};
+  border-radius: ${({ theme }) => theme.RADII.LG};
+  padding: 14px;
+  margin-bottom: 10px;
+`;
+
+export const UnderlinedText = styled.Text`
+  font-size: 16px;
+  text-align: center;
+  font-weight: 700;
+  text-decoration: underline;
+`;

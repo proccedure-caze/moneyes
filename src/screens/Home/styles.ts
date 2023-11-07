@@ -32,6 +32,7 @@ export const MainContent = styled.View`
   padding-top: 32px;
   flex-direction: row;
   gap: 18px;
+  padding-bottom: 32px;
 `;
 
 export const LiquidAnimationContainer = styled.View`
@@ -106,7 +107,6 @@ export const ExpensesHistoryView = styled.View`
   border-top-color: ${({ theme }) => theme.COLORS.GRAY_2};
   border-top-style: solid;
   padding-top: 24px;
-  margin-top: 16px;
 `;
 
 export const CardsSectionView = styled.View`
@@ -115,43 +115,6 @@ export const CardsSectionView = styled.View`
 `;
 
 export const CardsSectionTitle = styled.Text`
-  font-family: ${({ theme }) => theme.FONT_FAMILIES.BOLD};
-  color: ${({ theme }) => theme.COLORS.BLACK};
-`;
-
-export const CardsView = styled.View`
-  gap: 14px;
-  background-color: ${({ theme }) => theme.COLORS.WHITE};
-  border-radius: ${({ theme }) => theme.RADII.SM};
-`;
-
-export const CardContent = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
-export const CardContentRightView = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1;
-  padding-top: 24px;
-  padding-bottom: 24px;
-  padding-right: 12px;
-`;
-
-export const CardAmount = styled.Text`
-  font-family: ${({ theme }) => theme.FONT_FAMILIES.BOLD};
-  color: ${({ theme }) => theme.COLORS.BLACK};
-`;
-
-export const CardDescription = styled.Text`
-  font-family: ${({ theme }) => theme.FONT_FAMILIES.BOLD};
-  color: ${({ theme }) => theme.COLORS.GRAY};
-  font-size: 14px;
-`;
-
-export const UpdateCard = styled.Text`
   font-family: ${({ theme }) => theme.FONT_FAMILIES.BOLD};
   color: ${({ theme }) => theme.COLORS.BLACK};
 `;

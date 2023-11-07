@@ -63,10 +63,6 @@ export default function App() {
       Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
     });
 
-    setTimeout(() => {
-      SplashScreen.hideAsync();
-    }, 2000);
-
     return unsubscribe;
   }, []);
 

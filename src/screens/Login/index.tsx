@@ -2,7 +2,7 @@ import { useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import auth from "@react-native-firebase/auth";
 import { z } from "zod";
-import { TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { RouteProps } from "../../types/navigation";
@@ -17,7 +17,6 @@ import {
 } from "./styles";
 import { handleError } from "../../utils/handleError";
 import { Button } from "../../components/Button";
-import { Header } from "../../components/Header";
 
 const loginSchema = z.object({
   email: z.string({ required_error: "O email é obrigatório." }).email({
@@ -62,7 +61,15 @@ export default function Login({ navigation }: RouteProps<"Login">) {
 
   return (
     <LoginContainer>
-      <Header title="Moneyes" />
+      <Image
+        source={require("../../../assets/moneyes_logo_black.png")}
+        style={{
+          width: 200,
+          height: 200,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      />
       <LoginContent>
         <InputsView>
           <Input

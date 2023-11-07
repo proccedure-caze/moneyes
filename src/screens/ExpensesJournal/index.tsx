@@ -1,21 +1,54 @@
 import { useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { Calendar } from "../../components/Calendar";
 import { ExpenseJournalRecord } from "../../components/ExpenseJournalRecord";
-import { ExpensesJournalContainer } from "./styles";
+import {
+  ExpensesJournalContainer,
+  ScreenDescription,
+  UnderlinedText,
+} from "./styles";
 import { Button } from "../../components/Button";
-import { ActivityIndicator, ScrollView, Text } from "react-native";
 import { RouteProps } from "../../types/navigation";
-import { getUserExpensesFromMonth } from "../../services/expenses";
+import { getUserExpensesFromMonthAndYear } from "../../services/expenses";
 import { Expense } from "../../types/expense";
-import dayjs from "dayjs";
+import { formatBRL } from "../../utils";
+dayjs.extend(utc);
+
+const styles = StyleSheet.create({
+  shadow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+});
 
 export default function ExpensesJournal({
   navigation,
-}: RouteProps<"ExpensesJournal">) {
+}: RouteProps<"Despesas">) {
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<Date>(new Date());
   const [records, setRecords] = useState<Expense[]>([]);
+  const total = records.reduce((acc, record) => {
+    return acc + record.amount;
+  }, 0);
 
   const dayGotRecord = records.some((record) =>
     dayjs(record.start_date.toDate()).isSame(date, "date")
@@ -27,17 +60,28 @@ export default function ExpensesJournal({
     try {
       setLoading(true);
       setRecords([]);
-      const response = await getUserExpensesFromMonth(date.getMonth());
+      const dateInDayjs = dayjs(date).hour(0).minute(0).second(0);
+      const response = await getUserExpensesFromMonthAndYear(
+        dateInDayjs.get("month"),
+        dateInDayjs.get("year")
+      );
       const responseWithMonthDate = response
         .filter((res) => {
-          const dateInDayjs = dayjs(date);
-
           if (res.recurring === true) return true;
 
-          return dayjs(res.start_date.toDate())
+          const dayWithMonthAndYear = dayjs(res.start_date.toDate())
             .set("year", dateInDayjs.get("year"))
-            .set("month", dateInDayjs.get("month"))
-            .isBefore(res.end_date?.toDate());
+            .set("month", dateInDayjs.get("month"));
+          const condition1 = dayWithMonthAndYear.isBefore(
+            res.end_date?.toDate(),
+            "month"
+          );
+          const condition2 = dayWithMonthAndYear.isSame(
+            res.end_date?.toDate(),
+            "month"
+          );
+
+          return condition1 || condition2;
         })
         .map((res) => {
           const dateInDayjs = dayjs(date);
@@ -85,6 +129,9 @@ export default function ExpensesJournal({
         Adicionar novo
       </Button>
       <ScrollView
+        style={{
+          maxHeight: 180,
+        }}
         contentContainerStyle={{
           rowGap: 8,
           paddingBottom: 8,
@@ -114,6 +161,25 @@ export default function ExpensesJournal({
           </Text>
         )}
       </ScrollView>
+      {!loading && records.length ? (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <ScreenDescription style={styles.shadow}>
+            Total: <UnderlinedText>{formatBRL(total)}</UnderlinedText>
+          </ScreenDescription>
+        </View>
+      ) : (
+        <></>
+      )}
     </ExpensesJournalContainer>
   );
 }

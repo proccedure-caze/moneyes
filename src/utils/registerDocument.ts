@@ -25,7 +25,9 @@ export async function registerDocument<T>(
 
   if (addUserReference) {
     if (!currentUser) throw new Error("User not logged in");
-    updateData.user = firestore().doc(`users/${currentUser.uid}`) as any;
+    updateData.user = firestore().doc(
+      `${TABLES.USERS}/${currentUser.uid}`
+    ) as any;
   }
 
   await newDocRef.update(updateData);
